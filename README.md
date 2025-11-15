@@ -14,7 +14,7 @@ This bot is not meant to be run public. It will save the files in the host's fil
 
 3. [Create a Discord bot and generate a token](https://discordpy.readthedocs.io/en/stable/discord.html)
 
-4. Fill in the token in the `.env` file
+4. Fill in the token in the `token.txt` file
 
 5. Run the bot with `python main.py`
 
