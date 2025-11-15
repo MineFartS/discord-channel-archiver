@@ -1,4 +1,4 @@
-# Simple Discord Server Archiver
+# Discord Server Archiver
 
 This is a simple script that will archive all channels from a discord server into a folder. It will create a folder for each channel and save all their messages in that folder. It will also save all attachments and embeds.
 
