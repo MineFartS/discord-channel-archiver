@@ -5,7 +5,6 @@ import os, json
 token = open('token.txt').read().strip()
 
 intents = Intents.default()
-
 intents.message_content = True
 
 bot = commands.Bot(
@@ -14,44 +13,43 @@ bot = commands.Bot(
 )
 
 @bot.command()
-async def scrape(ctx):
+async def archive(
+    ctx: commands.Context
+):
 
-    # Check permission
-    if not ctx.author.guild_permissions.administrator:
-        
-        await ctx.send("You must be an administrator to use this command.")
-        
-        return
+    await ctx.send(f"""
+Starting Archival Process!
+Tool Created By: <@773970954539892746>
+https://github.com/MineFartS/discord-channel-archiver
+""")
     
-    channel_name = ctx.channel.name
+    for channel in ctx.guild.channels:
 
-    if(not channel_name):
-       
-       channel_name = "output"
+        await ctx.send(f"Archiving Channel: {channel.name}")
 
-    # Create output directory if it doesn't exist
-    if not os.path.exists(channel_name):
-        
-        os.makedirs(channel_name)
+        # Create output directory if it doesn't exist
+        if not os.path.exists(channel.name):
+            os.makedirs(channel.name)
 
-    with open(f'{channel_name}/messages.txt', 'w', encoding='utf-8') as file:
+        with open(f'{channel.name}/messages.txt', 'w', encoding='utf-8') as file:
 
-        # Fetch all messages
-        async for message in ctx.channel.history(limit=None, oldest_first=True):
+            # Fetch all messages
+            async for message in channel.history(limit=None, oldest_first=True):
 
-            # Writing message content, author, and timestamp to the file
-            file.write(f"[{message.created_at}] {message.author}: {message.content}\n")
-            
-            # Writing embeds in JSON format
-            for embed in message.embeds:
-                file.write(json.dumps(embed.to_dict()) + '\n')
+                # Writing message content, author, and timestamp to the file
+                file.write(f"[{message.created_at}] {message.author}: {message.content}\n")
+                
+                # Writing embeds in JSON format
+                for embed in message.embeds:
+                    file.write(json.dumps(embed.to_dict()) + '\n')
 
-            # Save attachments
-            for attachment in message.attachments:
+                # Save attachments
+                for attachment in message.attachments:
 
-                # Create a unique file name based on the message ID and original file name
-                await attachment.save(f"{channel_name}/{message.id}_{attachment.filename}")
+                    # Create a unique file name based on the message ID and original file name
+                    await attachment.save(f"{channel.name}/{message.id}_{attachment.filename}")
 
-    await ctx.send(f"Messages, attachments, and embeds have been saved to the {channel_name} folder")
+        #
+    await ctx.send("Archival Complete!")
 
 bot.run(token=token)
